@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insectalog — Documentação & Portfólio de IHC | IFPR Palmas</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        emerald: {
+                            950: '#022c22',
+                            900: '#064e3b',
+                            800: '#065f46',
+                            600: '#059669',
+                            100: '#d1fae5',
+                            50: '#ecfdf5',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos customizados para barra de progresso e micro-interações */
+        #progress-bar {
+            transition: width 0.15s ease-out;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .post-it {
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        }
+        .post-it:hover {
+            transform: translateY(-4px) rotate(0.5deg);
+        }
+        .high-contrast-mode {
+            filter: contrast(1.25);
+        }
+        .large-text-mode {
+            font-size: 112%;
+        }
+        /* Animação de scan no simulador */
+        @keyframes scanLine {
+            0% { top: 0%; opacity: 0.2; }
+            50% { top: 95%; opacity: 1; }
+            100% { top: 0%; opacity: 0.2; }
+        }
+        .scanning-bar {
+            animation: scanLine 1.8s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-emerald-600 selection:text-white">
+
+    <!-- Barra de Progresso de Leitura -->
+    <div class="fixed top-0 left-0 w-full h-1.5 bg-emerald-100 z-50">
+        <div id="progress-bar" class="h-full bg-gradient-to-r from-emerald-600 to-teal-400 w-0"></div>
+    </div>
+
+    <!-- Navegação Fixa (Sticky Navbar) -->
+    <header class="sticky top-1.5 z-40 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-2">
+        <nav aria-label="Navegação Principal" class="glass-card border border-emerald-200/80 shadow-lg shadow-emerald-950/5 rounded-2xl px-4 py-3 flex items-center justify-between">
+            <a href="#inicio" class="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-emerald-600 rounded-xl p-1">
+                <div class="w-10 h-10 rounded-xl bg-emerald-900 text-white flex items-center justify-center shadow-md group-hover:bg-emerald-600 transition-colors">
+                    <i class="fa-solid fa-bug text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-display font-extrabold text-lg text-emerald-950 tracking-tight block leading-none">Insectalog</span>
+                    <span class="text-[11px] font-medium text-emerald-700 tracking-wide uppercase">IHC • IFPR Palmas</span>
+                </div>
+            </a>
+
+            <!-- Links Desktop -->
+            <div class="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-600">
+                <a href="#empatia" class="px-3 py-2 rounded-xl hover:bg-emerald-50 hover:text-emerald-900 transition-colors">1. Empatia</a>
+                <a href="#definicao" class="px-3 py-2 rounded-xl hover:bg-emerald-50 hover:text-emerald-900 transition-colors">2. Definição</a>
+                <a href="#ideacao" class="px-3 py-2 rounded-xl hover:bg-emerald-50 hover:text-emerald-900 transition-colors">3. Ideação</a>
+                <a href="#prototipagem" class="px-3 py-2 rounded-xl hover:bg-emerald-50 hover:text-emerald-900 transition-colors">4. Protótipo & App</a>
+                <a href="#testes" class="px-3 py-2 rounded-xl hover:bg-emerald-50 hover:text-emerald-900 transition-colors">5. Testes & Leis IHC</a>
+                <a href="#checklist" class="px-3 py-2 rounded-xl hover:bg-emerald-50 hover:text-emerald-900 transition-colors">Checklist</a>
+            </div>
+
+            <!-- Controles Rápidos de Acessibilidade e Menu Mobile -->
+            <div class="flex items-center gap-2">
+                <button onclick="toggleFontSize()" title="Aumentar/Restaurar tamanho do texto" aria-label="Alternar tamanho da fonte" class="p-2.5 rounded-xl bg-emerald-50 text-emerald-900 hover:bg-emerald-100 transition-colors text-xs font-bold border border-emerald-200">
+                    <i class="fa-solid fa-text-height mr-1"></i>A+
+                </button>
+                <a href="#simulador" class="hidden sm:inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all">
+                    <i class="fa-solid fa-camera"></i> Testar App
+                </a>
+                <button id="mobile-menu-btn" aria-label="Abrir Menu" class="lg:hidden p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-emerald-50">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="hidden lg:hidden mt-2 glass-card border border-emerald-200 rounded-2xl p-4 shadow-xl">
+            <div class="grid grid-cols-2 gap-2 text-sm font-medium">
+                <a href="#empatia" class="p-2.5 rounded-xl bg-emerald-50/60 text-emerald-950">1. Empatia</a>
+                <a href="#definicao" class="p-2.5 rounded-xl bg-emerald-50/60 text-emerald-950">2. Definição</a>
+                <a href="#ideacao" class="p-2.5 rounded-xl bg-emerald-50/60 text-emerald-950">3. Ideação</a>
+                <a href="#prototipagem" class="p-2.5 rounded-xl bg-emerald-50/60 text-emerald-950">4. Protótipo & App</a>
+                <a href="#testes" class="p-2.5 rounded-xl bg-emerald-50/60 text-emerald-950">5. Testes & IHC</a>
+                <a href="#checklist" class="p-2.5 rounded-xl bg-emerald-50/60 text-emerald-950">Checklist Avaliação</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 1. HERO / CABEÇALHO INSTITUCIONAL -->
+    <section id="inicio" class="relative overflow-hidden pt-10 pb-16 sm:pt-16 sm:pb-24">
+        <!-- Fundo decorativo sutil -->
+        <div class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-100/80 via-emerald-50/40 to-slate-50"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Faixa de Identificação Acadêmica (Checklist: Identificação & Título) -->
+            <div class="bg-white border border-emerald-200 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-start sm:items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-900 text-white flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-graduation-cap text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">IFPR • Campus Palmas</span>
+                            <span class="text-xs font-semibold text-slate-500">Técnico Integrado em Informática para Internet • 2º Ano (2026)</span>
+                        </div>
+                        <p class="text-sm sm:text-base font-semibold text-slate-900 mt-1">
+                            Trabalho Avaliativo Trimestral Completo — Interação Humano-Computador (IHC)
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-4 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100 text-sm">
+                    <div>
+                        <span class="block text-xs text-slate-400 uppercase">Estudante</span>
+                        <span class="font-bold text-slate-800">Erik Liam G. Cerutti</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
+                    <div>
+                        <span class="block text-xs text-slate-400 uppercase">Docente</span>
+                        <span class="font-bold text-emerald-900">Profª Andreia Marini</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conteúdo Principal do Hero -->
+            <div class="grid lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-900 text-emerald-50 text-xs font-semibold tracking-wide shadow-sm">
+                        <i class="fa-solid fa-compass-drafting text-emerald-300"></i>
+                        <span>Processo: Design Thinking & Duplo Diamante (5 Etapas)</span>
+                    </div>
+
+                    <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-emerald-950 tracking-tight leading-[1.1]">
+                        Insectalog: <span class="text-emerald-600">Ciência e Segurança</span> na Palma da Mão.
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                        Documentação completa da experiência de design e desenvolvimento de uma aplicação voltada à identificação instantânea de insetos e animais peçonhentos a partir de fotografias, prevenindo acidentes e democratizando o conhecimento científico.
+                    </p>
+
+                    <!-- Botões de Ação (Link do Miro & Protótipo) -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="https://miro.com/app/board/uXjVG6Fdpe0=/" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center gap-3 bg-emerald-900 hover:bg-emerald-800 text-white font-semibold px-6 py-3.5 rounded-2xl shadow-lg shadow-emerald-900/20 transition-all hover:-translate-y-0.5">
+                            <i class="fa-solid fa-chalkboard-user text-emerald-300"></i>
+                            <span>Abrir Quadro no MIRO</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75"></i>
+                        </a>
+
+                        <a href="#simulador" 
+                           class="inline-flex items-center gap-3 bg-white hover:bg-emerald-50 text-emerald-900 border-2 border-emerald-200 font-semibold px-6 py-3.5 rounded-2xl transition-all">
+                            <i class="fa-solid fa-mobile-screen-button text-emerald-600"></i>
+                            <span>Testar Protótipo Interativo</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card Visual do Processo Design Thinking (Duplo Diamante) -->
+                <div class="lg:col-span-5">
+                    <div class="bg-white rounded-3xl border border-emerald-200 p-6 sm:p-7 shadow-xl shadow-emerald-950/5">
+                        <div class="flex items-center justify-between mb-5">
+                            <h2 class="font-display font-bold text-emerald-950 text-lg">Roteiro de Design Thinking</h2>
+                            <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">Duplo Diamante</span>
+                        </div>
+                        <div class="space-y-3">
+                            <a href="#empatia" class="flex items-center gap-3.5 p-3 rounded-2xl bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-100 transition-colors">
+                                <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white font-bold text-sm flex items-center justify-center shrink-0">1</span>
+                                <div>
+                                    <h3 class="font-bold text-sm text-emerald-950">Empatia (Descobrir)</h3>
+                                    <p class="text-xs text-slate-600">Escolha do problema, HMW, público-alvo e Mapas de Empatia</p>
+                                </div>
+                            </a>
+                            <a href="#definicao" class="flex items-center gap-3.5 p-3 rounded-2xl bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-100 transition-colors">
+                                <span class="w-8 h-8 rounded-xl bg-emerald-700 text-white font-bold text-sm flex items-center justify-center shrink-0">2</span>
+                                <div>
+                                    <h3 class="font-bold text-sm text-emerald-950">Definição (Definir)</h3>
+                                    <p class="text-xs text-slate-600">Matriz CSD, Personas reais e Jornada do Usuário</p>
+                                </div>
+                            </a>
+                            <a href="#ideacao" class="flex items-center gap-3.5 p-3 rounded-2xl bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-100 transition-colors">
+                                <span class="w-8 h-8 rounded-xl bg-emerald-800 text-white font-bold text-sm flex items-center justify-center shrink-0">3</span>
+                                <div>
+                                    <h3 class="font-bold text-sm text-emerald-950">Ideação (Desenvolver)</h3>
+                                    <p class="text-xs text-slate-600">Crazy 8, Plano de Ação e Fluxo de Telas do App</p>
+                                </div>
+                            </a>
+                            <a href="#prototipagem" class="flex items-center gap-3.5 p-3 rounded-2xl bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-100 transition-colors">
+                                <span class="w-8 h-8 rounded-xl bg-emerald-900 text-white font-bold text-sm flex items-center justify-center shrink-0">4</span>
+                                <div>
+                                    <h3 class="font-bold text-sm text-emerald-950">Prototipação (Entregar)</h3>
+                                    <p class="text-xs text-slate-600">Interface de média/alta fidelidade e Simulador ao vivo</p>
+                                </div>
+                            </a>
+                            <a href="#testes" class="flex items-center gap-3.5 p-3 rounded-2xl bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-100 transition-colors">
+                                <span class="w-8 h-8 rounded-xl bg-teal-600 text-white font-bold text-sm flex items-center justify-center shrink-0">5</span>
+                                <div>
+                                    <h3 class="font-bold text-sm text-emerald-950">Teste & Acessibilidade</h3>
+                                    <p class="text-xs text-slate-600">Usabilidade, Lei de Fitts, Lei de Hick e inclusão</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. ETAPA 1 – EMPATIA -->
+    <section id="empatia" class="py-16 sm:py-20 bg-white border-t border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-600 block mb-2">Etapa 01 • Design Thinking</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-emerald-950">Empatia: Compreendendo o Problema e os Usuários</h2>
+                <p class="text-slate-600 mt-3 text-base sm:text-lg">
+                    A imersão inicial partiu da observação cotidiana de situações de risco envolvendo animais desconhecidos em trilhas, residências e áreas rurais.
+                </p>
+            </div>
+
+            <!-- Escolha do Problema e HMW -->
+            <div class="grid lg:grid-cols-12 gap-6 mb-12">
+                <div class="lg:col-span-5 bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-emerald-800 font-bold text-sm bg-emerald-100 px-3 py-1 rounded-xl mb-4">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Tema: Identificação de Insetos</span>
+                        </div>
+                        <h3 class="font-display text-xl font-bold text-slate-900 mb-3">O Problema Identificado</h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            Muitas pessoas encontram insetos ou aracnídeos no dia a dia e não sabem identificar qual espécie é, se o animal é dócil ou agressivo, e principalmente se possui peçonha. A falta de informação rápida gera pânico ou leva a acidentes evitáveis.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-5 border-t border-slate-200">
+                        <span class="text-xs font-bold uppercase text-slate-400 block mb-1">Por que usar tecnologia?</span>
+                        <p class="text-sm font-medium text-emerald-900">
+                            "Para evitar riscos desnecessários que podem levar a acidentes graves ou fatais por meio do reconhecimento visual imediato."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card Destaque HMW -->
+                <div class="lg:col-span-7 bg-gradient-to-br from-emerald-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-lg flex flex-col justify-center relative overflow-hidden">
+                    <i class="fa-solid fa-quote-right absolute -bottom-4 -right-4 text-9xl text-emerald-800/30 pointer-events-none"></i>
+                    <span class="inline-block w-fit text-xs font-bold uppercase tracking-widest bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 px-3 py-1 rounded-full mb-4">
+                        How Might We (Como Poderíamos...)
+                    </span>
+                    <blockquote class="font-display text-xl sm:text-2xl font-bold leading-snug text-white">
+                        “Como poderíamos criar uma aplicação para ajudar as pessoas a identificarem insetos a partir de uma simples foto, informando se são venenosos ou inofensivos, evitando acidentes em momentos de incerteza e trazendo mais segurança?”
+                    </blockquote>
+                    <p class="text-emerald-200/90 text-sm mt-4">
+                        Foco deslocado da "queixa" (medo e desconhecimento) diretamente para a "solução" (identificação rápida e preventiva).
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pesquisa com Usuários: Mapeamento de Públicos (Atividade em Sala) -->
+            <div class="mb-12">
+                <h3 class="font-display text-xl font-bold text-emerald-950 mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-users text-emerald-600"></i>
+                    <span>Pesquisa de Públicos Impactados (Entrevistas & Observação)</span>
+                </h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider bg-emerald-600 text-white px-2.5 py-1 rounded-lg">Usuário Primário</span>
+                            <span class="text-xs font-semibold text-emerald-800">Uso Regular</span>
+                        </div>
+                        <h4 class="font-display font-bold text-lg text-slate-900 mb-2">Trilheiros e Exploradores</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Pessoas que frequentam matas e trilhas regularmente e precisam identificar insetos e animais pequenos encontrados no caminho para evitar picadas.
+                        </p>
+                    </div>
+
+                    <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider bg-emerald-800 text-white px-2.5 py-1 rounded-lg">Usuário Secundário</span>
+                            <span class="text-xs font-semibold text-emerald-800">Uso Esporádico</span>
+                        </div>
+                        <h4 class="font-display font-bold text-lg text-slate-900 mb-2">Campistas e Moradores</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Pessoas que acampam ocasionalmente ou encontram aranhas e insetos dentro de casa/quintal e precisam saber se há risco para a família.
+                        </p>
+                    </div>
+
+                    <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold uppercase tracking-wider bg-slate-700 text-white px-2.5 py-1 rounded-lg">Usuário Terciário</span>
+                            <span class="text-xs font-semibold text-slate-600">Afetado pelo Sistema</span>
+                        </div>
+                        <h4 class="font-display font-bold text-lg text-slate-900 mb-2">Familiares e Comunidade</h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Pais, filhos e acompanhantes que se beneficiam indiretamente da prevenção de acidentes e da conscientização ambiental gerada pelo app.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Síntese dos 4 Mapas de Empatia do Miro -->
+            <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="font-display text-xl font-bold text-white">Síntese dos 4 Mapas de Empatia (Quadro Miro)</h3>
+                        <p class="text-slate-400 text-sm">Consolidação de sentimentos, percepções, dores e necessidades coletadas na pesquisa.</p>
+                    </div>
+                    <span class="text-xs font-semibold bg-emerald-500/20 text-emerald-300 px-3 py-1.5 rounded-xl border border-emerald-500/30 w-fit">
+                        4 Perfis Mapeados
+                    </span>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4">
+                        <div class="text-emerald-400 font-bold text-sm mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-brain"></i> Pensa e Sente
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li>Medo e preocupação ao ver insetos estranhos</li>
+                            <li>Necessidade de agir rápido para saber se está em risco</li>
+                            <li>Curiosidade sobre biodiversidade, mas frustração com nomes científicos</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4">
+                        <div class="text-emerald-400 font-bold text-sm mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-eye"></i> O que Vê
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li>Insetos aparecendo em casa, trilhas e lavouras</li>
+                            <li>Conteúdos superficiais ou informações confusas na internet</li>
+                            <li>Apps existentes com pouca profundidade ou difíceis de usar</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4">
+                        <div class="text-emerald-400 font-bold text-sm mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-ear-listen"></i> O que Ouve
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li>Dicas informais de vizinhos e familiares</li>
+                            <li>Notícias sobre acidentes com insetos perigosos</li>
+                            <li>Professores e especialistas falando sobre biodiversidade</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-4">
+                        <div class="text-emerald-400 font-bold text-sm mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-person-walking"></i> Fala e Faz
+                        </div>
+                        <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
+                            <li>Pesquisa rapidamente no Google e YouTube</li>
+                            <li>Pergunta para conhecidos ou tira fotos para tentar identificar</li>
+                            <li>Testa soluções práticas no dia a dia</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Dores vs Necessidades -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-rose-950/50 border border-rose-800/60 rounded-2xl p-4">
+                        <h4 class="font-bold text-rose-300 text-sm mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Principais Dores (Pains)
+                        </h4>
+                        <p class="text-xs sm:text-sm text-rose-100/90">
+                            Falta de identificação rápida e confiável, insegurança sobre riscos de veneno, linguagem técnica difícil de entender e falta de precisão nos dados atuais.
+                        </p>
+                    </div>
+                    <div class="bg-emerald-950/70 border border-emerald-700/60 rounded-2xl p-4">
+                        <h4 class="font-bold text-emerald-300 text-sm mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> Principais Necessidades (Gains)
+                        </h4>
+                        <p class="text-xs sm:text-sm text-emerald-100/90">
+                            Identificação instantânea via foto, alertas de perigo claros e visuais, conteúdo explicativo simples e registro histórico de observações.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. ETAPA 2 – DEFINIÇÃO -->
+    <section id="definicao" class="py-16 sm:py-20 bg-emerald-50/40 border-t border-emerald-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-600 block mb-2">Etapa 02 • Design Thinking</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-emerald-950">Definição: Escopo, Matriz CSD, Personas e Jornada</h2>
+                <p class="text-slate-600 mt-3 text-base sm:text-lg">
+                    Estruturamos o objetivo central do Insectalog, organizamos nossas hipóteses na Matriz CSD e personificamos os usuários reais.
+                </p>
+            </div>
+
+            <!-- Objetivo e Definição do Problema -->
+            <div class="bg-white border border-emerald-200 rounded-3xl p-6 sm:p-8 shadow-sm mb-12">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-display font-bold text-lg text-emerald-900 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-emerald-600"></i> Objetivo do Projeto
+                        </h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            Criar um aplicativo acessível, comunicativo e confiável capaz de identificar insetos a partir de uma simples fotografia, informando imediatamente se são peçonhentos, agressivos ou inofensivos, promovendo educação ambiental e prevenção de acidentes.
+                        </p>
+                    </div>
+                    <div class="border-t md:border-t-0 md:border-l border-slate-200 pt-6 md:pt-0 md:pl-8">
+                        <h3 class="font-display font-bold text-lg text-emerald-900 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check text-emerald-600"></i> Definição do Problema a Resolver
+                        </h3>
+                        <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            Eliminar a barreira entre o conhecimento científico complexo e o cidadão comum em momentos de urgência ou dúvida ao encontrar um inseto desconhecido em trilhas, residências ou atividades ao ar livre.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MATRIZ CSD (Certezas, Suposições e Dúvidas) -->
+            <div class="mb-16">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="font-display text-2xl font-bold text-emerald-950">Matriz CSD</h3>
+                        <p class="text-sm text-slate-600">Certezas, Suposições e Dúvidas levantadas no quadro do Miro.</p>
+                    </div>
+                    <!-- Filtro interativo da Matriz CSD -->
+                    <div class="inline-flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm text-xs font-bold">
+                        <button onclick="filterCSD('all')" class="csd-btn active px-3 py-1.5 rounded-lg bg-emerald-900 text-white transition-all">Todas</button>
+                        <button onclick="filterCSD('certezas')" class="csd-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-pink-700 transition-all">Certezas</button>
+                        <button onclick="filterCSD('suposicoes')" class="csd-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-lime-700 transition-all">Suposições</button>
+                        <button onclick="filterCSD('duvidas')" class="csd-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-cyan-700 transition-all">Dúvidas</button>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Coluna Certezas -->
+                    <div id="csd-certezas" class="bg-white rounded-3xl border border-pink-200 p-5 shadow-sm">
+                        <div class="bg-pink-600 text-white font-display font-bold text-center py-2.5 rounded-2xl mb-4 shadow-sm">
+                            Certezas (Certainties)
+                        </div>
+                        <div class="space-y-3">
+                            <div class="post-it bg-pink-100 border border-pink-200 text-pink-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Será utilizado para identificar insetos de forma rápida por meio de fotos.
+                            </div>
+                            <div class="post-it bg-pink-100 border border-pink-200 text-pink-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Será usado tanto no dia a dia (dentro de casa) quanto em atividades externas (trilhas).
+                            </div>
+                            <div class="post-it bg-pink-100 border border-pink-200 text-pink-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Será principalmente usado por pessoas que não possuem muito conhecimento científico sobre insetos.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna Suposições -->
+                    <div id="csd-suposicoes" class="bg-white rounded-3xl border border-lime-200 p-5 shadow-sm">
+                        <div class="bg-lime-600 text-white font-display font-bold text-center py-2.5 rounded-2xl mb-4 shadow-sm">
+                            Suposições (Suppositions)
+                        </div>
+                        <div class="space-y-3">
+                            <div class="post-it bg-lime-100 border border-lime-200 text-lime-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Pessoas usariam com frequência durante caminhadas ecológicas e acampamentos.
+                            </div>
+                            <div class="post-it bg-lime-100 border border-lime-200 text-lime-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Os usuários recomendariam o aplicativo para amigos, familiares e vizinhos pela utilidade preventiva.
+                            </div>
+                            <div class="post-it bg-lime-100 border border-lime-200 text-lime-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                O público geral adotaria o app se a linguagem for visual e direta.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna Dúvidas -->
+                    <div id="csd-duvidas" class="bg-white rounded-3xl border border-cyan-200 p-5 shadow-sm">
+                        <div class="bg-cyan-600 text-white font-display font-bold text-center py-2.5 rounded-2xl mb-4 shadow-sm">
+                            Dúvidas (Doubts)
+                        </div>
+                        <div class="space-y-3">
+                            <div class="post-it bg-cyan-100 border border-cyan-200 text-cyan-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Os usuários gostariam e se adaptariam facilmente ao modo de usar?
+                            </div>
+                            <div class="post-it bg-cyan-100 border border-cyan-200 text-cyan-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Biólogos e pesquisadores também usariam o aplicativo como ferramenta auxiliar de trabalho?
+                            </div>
+                            <div class="post-it bg-cyan-100 border border-cyan-200 text-cyan-950 p-4 rounded-2xl text-sm font-medium shadow-sm">
+                                Um sistema de ranking de análises incentivaria as pessoas a catalogarem mais insetos?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERSONAS -->
+            <div class="mb-16">
+                <h3 class="font-display text-2xl font-bold text-emerald-950 mb-2">Personas do Projeto</h3>
+                <p class="text-sm text-slate-600 mb-6">Representações semifictícias criadas a partir dos dados reais coletados na etapa de Empatia.</p>
+
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Persona 1: Robertiniro Cardoso -->
+                    <article class="bg-amber-50/90 border border-amber-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl font-bold shadow-sm">
+                                    <i class="fa-solid fa-user-graduate"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-display font-extrabold text-lg text-slate-900">Robertiniro Cardoso</h4>
+                                    <span class="text-xs font-bold bg-amber-200/80 text-amber-950 px-2.5 py-0.5 rounded-full">16 anos • Estudante do Ensino Médio</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4"><strong>Tecnologia:</strong> Usa bastante celular, redes sociais e apps educacionais.</p>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-white/80 p-3 rounded-xl border border-amber-200/70">
+                                    <span class="font-bold text-amber-900 block text-xs uppercase">Objetivo</span>
+                                    Aprender mais sobre insetos para trabalhos escolares e curiosidade pessoal.
+                                </div>
+                                <div class="bg-white/80 p-3 rounded-xl border border-amber-200/70">
+                                    <span class="font-bold text-rose-700 block text-xs uppercase">Dores (Problemas)</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs space-y-1 mt-1">
+                                        <li>Dificuldade em identificar espécies corretamente</li>
+                                        <li><strong>(Principal dor)</strong> Conteúdos científicos muito complicados</li>
+                                        <li>Falta de fontes confiáveis e simples</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-amber-200/70 text-xs text-amber-950">
+                            <strong>Motivações:</strong> Tirar boas notas, entender melhor a natureza e compartilhar descobertas com amigos.
+                        </div>
+                    </article>
+
+                    <!-- Persona 2: Silvia Silva -->
+                    <article class="bg-sky-50/90 border border-sky-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-sky-600 text-white flex items-center justify-center text-2xl font-bold shadow-sm">
+                                    <i class="fa-solid fa-house-chimney-user"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-display font-extrabold text-lg text-slate-900">Silvia Silva</h4>
+                                    <span class="text-xs font-bold bg-sky-200/80 text-sky-950 px-2.5 py-0.5 rounded-full">42 anos • Cuida da casa e da família</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4"><strong>Perfil:</strong> Foco em proteção doméstica e respostas práticas no cotidiano.</p>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-white/80 p-3 rounded-xl border border-sky-200/70">
+                                    <span class="font-bold text-sky-900 block text-xs uppercase">Objetivo</span>
+                                    Identificar insetos dentro de casa para saber imediatamente se são perigosos.
+                                </div>
+                                <div class="bg-white/80 p-3 rounded-xl border border-sky-200/70">
+                                    <span class="font-bold text-rose-700 block text-xs uppercase">Dores (Problemas)</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs space-y-1 mt-1">
+                                        <li><strong>(Principal dor)</strong> Medo de insetos venenosos</li>
+                                        <li>Não sabe diferenciar espécies inofensivas de peçonhentas</li>
+                                        <li>Falta de tempo para pesquisar em sites longos</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-sky-200/70 text-xs text-sky-950">
+                            <strong>Motivações:</strong> Proteger a família, manter a casa segura e resolver problemas rapidamente.
+                        </div>
+                    </article>
+
+                    <!-- Persona 3: Rafaela Costa -->
+                    <article class="bg-emerald-50/90 border border-emerald-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl font-bold shadow-sm">
+                                    <i class="fa-solid fa-camera-retro"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-display font-extrabold text-lg text-slate-900">Rafaela Costa</h4>
+                                    <span class="text-xs font-bold bg-emerald-200/80 text-emerald-950 px-2.5 py-0.5 rounded-full">28 anos • Apaixonada por natureza e fotografia</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 mb-4"><strong>Perfil:</strong> Explora trilhas, fotografa fauna e participa de comunidades.</p>
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-white/80 p-3 rounded-xl border border-emerald-200/70">
+                                    <span class="font-bold text-emerald-900 block text-xs uppercase">Objetivo</span>
+                                    Catalogar insetos fotografados e aprender mais sobre as espécies encontradas.
+                                </div>
+                                <div class="bg-white/80 p-3 rounded-xl border border-emerald-200/70">
+                                    <span class="font-bold text-rose-700 block text-xs uppercase">Dores (Problemas)</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs space-y-1 mt-1">
+                                        <li>Apps atuais pouco precisos</li>
+                                        <li>Falta de informações detalhadas</li>
+                                        <li><strong>(Principal dor)</strong> Dificuldade em registrar e organizar observações</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-emerald-200/70 text-xs text-emerald-950">
+                            <strong>Motivações:</strong> Hobby de fotografia, interesse científico e compartilhar conhecimento.
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- JORNADA DO USUÁRIO -->
+            <div class="bg-white border border-emerald-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+                <div class="mb-6">
+                    <h3 class="font-display text-2xl font-bold text-emerald-950">Mapa de Jornada do Usuário</h3>
+                    <p class="text-sm text-slate-600">Evolução da experiência, pontos de contato, dores e estado emocional antes e depois do uso do Insectalog.</p>
+                </div>
+
+                <div class="overflow-x-auto pb-2">
+                    <table class="w-full min-w-[820px] text-left border-collapse">
+                        <thead>
+                            <tr>
+                                <th class="p-3 bg-amber-300 text-slate-900 font-display font-bold text-xs uppercase rounded-tl-2xl w-36">Fases da Jornada</th>
+                                <th class="p-3 bg-slate-100 text-slate-800 font-bold text-xs text-center border-l border-white">1. Planejamento / Sonho</th>
+                                <th class="p-3 bg-slate-100 text-slate-800 font-bold text-xs text-center border-l border-white">2. Pesquisa</th>
+                                <th class="p-3 bg-slate-100 text-slate-800 font-bold text-xs text-center border-l border-white">3. Exposição ao Ambiente</th>
+                                <th class="p-3 bg-slate-100 text-slate-800 font-bold text-xs text-center border-l border-white">4. Encontro / Risco</th>
+                                <th class="p-3 bg-emerald-100 text-emerald-950 font-bold text-xs text-center border-l border-white">5. Uso do Insectalog</th>
+                                <th class="p-3 bg-emerald-200 text-emerald-950 font-bold text-xs text-center border-l border-white rounded-tr-2xl">6. Experiência & Segurança</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-xs divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700 bg-slate-50"><i class="fa-solid fa-list-check text-amber-500 mr-1.5"></i>Ações (Jobs)</td>
+                                <td class="p-3 text-slate-600">Planejar trilha, acampamento ou ambiente seguro</td>
+                                <td class="p-3 text-slate-600">Pesquisar locais e possíveis riscos ambientais</td>
+                                <td class="p-3 text-slate-600">Caminhar na natureza ou cuidar do ambiente</td>
+                                <td class="p-3 text-slate-600">Avistar um inseto ou aranha desconhecida</td>
+                                <td class="p-3 text-emerald-900 font-medium bg-emerald-50/40">Abrir o app, fotografar e checar periculosidade</td>
+                                <td class="p-3 text-emerald-900 font-medium bg-emerald-50/40">Agir com segurança e salvar no catálogo</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700 bg-slate-50"><i class="fa-solid fa-mobile-screen text-sky-500 mr-1.5"></i>Touchpoints</td>
+                                <td class="p-3 text-slate-600">Ideias, redes sociais, amigos</td>
+                                <td class="p-3 text-slate-600">Google, sites, vídeos</td>
+                                <td class="p-3 text-slate-600">Trilha, quintal, residência</td>
+                                <td class="p-3 text-slate-600">Contato visual direto com o animal</td>
+                                <td class="p-3 text-emerald-900 font-medium bg-emerald-50/40">Câmera e interface do Insectalog</td>
+                                <td class="p-3 text-emerald-900 font-medium bg-emerald-50/40">Catálogo pessoal e Ranking</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700 bg-slate-50"><i class="fa-solid fa-face-smile-beam text-emerald-600 mr-1.5"></i>Ganhos (Gains)</td>
+                                <td class="p-3 text-slate-600">Entusiasmo com o lazer ou projeto</td>
+                                <td class="p-3 text-slate-600">Encontrar dicas iniciais</td>
+                                <td class="p-3 text-slate-600">Contato com a natureza</td>
+                                <td class="p-3 text-slate-600">Atenção redobrada</td>
+                                <td class="p-3 text-emerald-800 font-semibold bg-emerald-50/40">Identificação instantânea e clara</td>
+                                <td class="p-3 text-emerald-800 font-semibold bg-emerald-50/40">Tranquilidade, aprendizado e prevenção</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700 bg-slate-50"><i class="fa-solid fa-heart-crack text-rose-500 mr-1.5"></i>Dores (Pains)</td>
+                                <td class="p-3 text-slate-600">Receio de imprevistos</td>
+                                <td class="p-3 text-slate-600">Informações técnicas confusas</td>
+                                <td class="p-3 text-slate-600">Falta de sinal ou guia</td>
+                                <td class="p-3 text-rose-700 font-medium">Medo de picada e não saber se é venenoso</td>
+                                <td class="p-3 text-slate-600 bg-emerald-50/40">Necessidade de foco rápido na foto</td>
+                                <td class="p-3 text-slate-600 bg-emerald-50/40">Zero acidentes evitáveis</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-slate-700 bg-slate-50 rounded-bl-2xl"><i class="fa-solid fa-masks-theater text-purple-500 mr-1.5"></i>Curva Emocional</td>
+                                <td class="p-3 text-center text-2xl">🙂</td>
+                                <td class="p-3 text-center text-2xl">🤔</td>
+                                <td class="p-3 text-center text-2xl">😟</td>
+                                <td class="p-3 text-center text-2xl">😨</td>
+                                <td class="p-3 text-center text-2xl bg-emerald-50/40">😊</td>
+                                <td class="p-3 text-center text-2xl bg-emerald-50/40 rounded-br-2xl">🤩</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. ETAPA 3 – IDEAÇÃO -->
+    <section id="ideacao" class="py-16 sm:py-20 bg-white border-t border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-600 block mb-2">Etapa 03 • Design Thinking</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-emerald-950">Ideação: Crazy 8, Plano de Ação e Fluxo de Telas</h2>
+                <p class="text-slate-600 mt-3 text-base sm:text-lg">
+                    A partir da técnica de esboços rápidos (Crazy 8) e do Plano de Ação (Action Plan) no Miro, definimos os diferenciais e a arquitetura de navegação do aplicativo.
+                </p>
+            </div>
+
+            <!-- Plano de Ação (5 Perguntas do Miro) -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6">
+                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-lg">Pergunta 1</span>
+                    <h3 class="font-display font-bold text-base text-slate-900 mt-3 mb-2">Quais problemas resolvemos?</h3>
+                    <ul class="text-sm text-slate-600 space-y-1.5 list-disc list-inside">
+                        <li>Apps existentes com identificação imprecisa</li>
+                        <li>Poucas informações científicas acessíveis</li>
+                        <li>Falta de integração entre fotos e anotações pessoais</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6">
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">Pergunta 2</span>
+                    <h3 class="font-display font-bold text-base text-slate-900 mt-3 mb-2">Como vamos resolver?</h3>
+                    <ul class="text-sm text-slate-600 space-y-1.5 list-disc list-inside">
+                        <li>Acesso simples a informações científicas confiáveis</li>
+                        <li>Sistema integrado de catálogo pessoal e anotações</li>
+                        <li>Identificação visual precisa que coincida com a realidade</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6">
+                    <span class="text-xs font-bold text-sky-700 bg-sky-100 px-2.5 py-1 rounded-lg">Pergunta 3</span>
+                    <h3 class="font-display font-bold text-base text-slate-900 mt-3 mb-2">Quais são os diferenciais?</h3>
+                    <ul class="text-sm text-slate-600 space-y-1.5 list-disc list-inside">
+                        <li>Interface comunicativa e fácil de usar em emergências</li>
+                        <li>Uso versátil (em casa, trilhas ou acampamentos)</li>
+                        <li><strong>Sistema de Ranking</strong> para incentivar a catalogação</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6">
+                    <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2.5 py-1 rounded-lg">Pergunta 4</span>
+                    <h3 class="font-display font-bold text-base text-slate-900 mt-3 mb-2">Para quem é este produto?</h3>
+                    <ul class="text-sm text-slate-600 space-y-1.5 list-disc list-inside">
+                        <li>Trilheiros inexperientes e campistas</li>
+                        <li>Famílias preocupadas com segurança doméstica</li>
+                        <li>Estudantes e biólogos como ferramenta de campo</li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-2 bg-emerald-900 text-white rounded-3xl p-6 flex flex-col justify-center">
+                    <span class="text-xs font-bold text-emerald-200 bg-emerald-800 px-2.5 py-1 rounded-lg w-fit">Pergunta 5 • Proposta de Valor</span>
+                    <h3 class="font-display font-bold text-xl mt-3 mb-2">Benefícios conquistados após o uso</h3>
+                    <p class="text-emerald-100 text-sm sm:text-base leading-relaxed">
+                        Segurança imediata para amigos, família e pessoas próximas, maior conhecimento prático sobre biodiversidade e resposta rápida para curiosidades do dia a dia sem termos técnicos inacessíveis.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Fluxo de Tarefas e Ordenação de Telas -->
+            <div class="bg-emerald-50/70 border border-emerald-200 rounded-3xl p-6 sm:p-8">
+                <h3 class="font-display text-xl font-bold text-emerald-950 mb-2">Fluxo de Tarefas e Ordenação de Telas do App</h3>
+                <p class="text-sm text-slate-600 mb-6">Arquitetura sequencial projetada para minimizar cliques até a resposta de segurança (Crazy 8 & User Flow).</p>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm relative">
+                        <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center mb-3">01</span>
+                        <h4 class="font-bold text-sm text-slate-900 mb-1">Tela Inicial (Home)</h4>
+                        <p class="text-xs text-slate-600">Botões diretos para "Tirar Foto" ou "Enviar Imagem" logo na primeira dobra.</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm relative">
+                        <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center mb-3">02</span>
+                        <h4 class="font-bold text-sm text-slate-900 mb-1">Captura / Upload</h4>
+                        <p class="text-xs text-slate-600">Área ampla de drag-and-drop ou câmera para análise instantânea do espécime.</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm relative">
+                        <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center mb-3">03</span>
+                        <h4 class="font-bold text-sm text-slate-900 mb-1">Resultado & Alerta</h4>
+                        <p class="text-xs text-slate-600">Exibição do nome popular, científico, selo de risco (Dócil / Perigoso) e orientações.</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm relative">
+                        <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center mb-3">04</span>
+                        <h4 class="font-bold text-sm text-slate-900 mb-1">Meu Catálogo</h4>
+                        <p class="text-xs text-slate-600">Registro histórico com filtros por risco (Dócil, Atenção, Peçonhento) e notas.</p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm relative">
+                        <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center mb-3">05</span>
+                        <h4 class="font-bold text-sm text-slate-900 mb-1">Ranking & Sobre</h4>
+                        <p class="text-xs text-slate-600">Gamificação com posição de colaboradores e contexto científico do IFPR.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. ETAPA 4 – PROTOTIPAGEM + SIMULADOR INTERATIVO AO VIVO -->
+    <section id="prototipagem" class="py-16 sm:py-20 bg-slate-900 text-white border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-400 block mb-2">Etapa 04 • Design Thinking</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white">Prototipação de Média/Alta Fidelidade</h2>
+                <p class="text-slate-300 mt-3 text-base sm:text-lg">
+                    Abaixo estão documentadas as 4 telas principais projetadas para o <strong class="text-emerald-300">Insectalog</strong>, seguidas por um simulador funcional para testar a experiência do usuário em tempo real.
+                </p>
+            </div>
+
+            <!-- Visão Geral das 4 Telas do Protótipo (Baseado na Captura de Tela do Protótipo) -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5">
+                    <div class="flex items-center justify-between text-xs text-emerald-400 font-bold mb-2">
+                        <span>TELA 01</span>
+                        <i class="fa-solid fa-house"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-base text-white mb-2">Home & Proposta</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Destaque para o slogan <em>"Evite acidentes. Saiba se o inseto é perigoso ou dócil apenas com uma foto"</em>, botões primários de ação e público-alvo (trilheiros, campistas e famílias).
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5">
+                    <div class="flex items-center justify-between text-xs text-rose-400 font-bold mb-2">
+                        <span>TELA 02</span>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-base text-white mb-2">Identificação & Alerta</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Upload de foto com resultado imediato: exemplo validado com a <strong>Aranha Armadeira (Phoneutria nigriventer)</strong> exibindo badge vermelho <strong>PERIGOSO</strong> e orientação médica.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5">
+                    <div class="flex items-center justify-between text-xs text-amber-400 font-bold mb-2">
+                        <span>TELA 03</span>
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-base text-white mb-2">Ranking & Catálogo</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Exibe a posição do usuário no Ranking de Colaboradores (ex: 12º lugar) e o catálogo pessoal com etiquetas visuais (Dócil, Atenção, Peçonhento).
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5">
+                    <div class="flex items-center justify-between text-xs text-teal-400 font-bold mb-2">
+                        <span>TELA 04</span>
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-base text-white mb-2">Ciência e Segurança</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Contextualização institucional do projeto desenvolvido no <strong>IFPR - Campus Palmas</strong>, conectando pesquisa científica à prevenção de acidentes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SIMULADOR INTERATIVO DO APP INSECTALOG -->
+            <div id="simulador" class="bg-emerald-50 text-slate-800 rounded-3xl p-5 sm:p-8 lg:p-10 shadow-2xl border-4 border-emerald-600/40">
+                <!-- Header do Mockup do App -->
+                <div class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-emerald-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-900 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-display font-extrabold text-xl text-emerald-950">Insectalog</span>
+                                <span class="text-[11px] font-bold bg-emerald-600 text-white px-2.5 py-0.5 rounded-full">SIMULADOR INTERATIVO</span>
+                            </div>
+                            <p class="text-xs text-slate-600">Teste a interface do protótipo selecionando uma amostra abaixo ou enviando uma imagem</p>
+                        </div>
+                    </div>
+
+                    <!-- Mini indicador de Ranking -->
+                    <div class="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border border-emerald-200 shadow-sm">
+                        <i class="fa-solid fa-medal text-amber-500 text-lg"></i>
+                        <div class="text-xs">
+                            <span class="text-slate-400 block">Seu Ranking</span>
+                            <span id="sim-rank-count" class="font-bold text-emerald-950">12º Lugar (4 catalogados)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Seleção Rápida de Espécimes (Para facilitar a apresentação em sala) -->
+                <div class="mb-6">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-900 block mb-2.5">
+                        1. Escolha um espécime de teste ou carregue uma foto do dispositivo:
+                    </span>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button onclick="analyzeSpecimen('armadeira')" class="px-4 py-2.5 rounded-xl bg-white hover:bg-rose-50 border border-rose-200 text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2 shadow-sm transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span> Aranha Armadeira
+                        </button>
+                        <button onclick="analyzeSpecimen('escorpiao')" class="px-4 py-2.5 rounded-xl bg-white hover:bg-rose-50 border border-rose-200 text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2 shadow-sm transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span> Escorpião Amarelo
+                        </button>
+                        <button onclick="analyzeSpecimen('abelha')" class="px-4 py-2.5 rounded-xl bg-white hover:bg-amber-50 border border-amber-200 text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2 shadow-sm transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Abelha Europeia
+                        </button>
+                        <button onclick="analyzeSpecimen('joaninha')" class="px-4 py-2.5 rounded-xl bg-white hover:bg-emerald-100 border border-emerald-300 text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-2 shadow-sm transition-all">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Joaninha
+                        </button>
+
+                        <label class="cursor-pointer px-4 py-2.5 rounded-xl bg-emerald-900 hover:bg-emerald-800 text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm transition-all ml-auto">
+                            <i class="fa-solid fa-upload"></i> Enviar Foto Local
+                            <input type="file" accept="image/*" class="hidden" onchange="handleCustomUpload(event)">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Área Principal do Simulador (2 Colunas: Visualização da Foto + Resultado da Análise) -->
+                <div class="grid lg:grid-cols-12 gap-6 items-stretch">
+                    <!-- Coluna Esquerda: Visor da Imagem -->
+                    <div class="lg:col-span-5 bg-emerald-100/80 border-2 border-dashed border-emerald-400 rounded-2xl p-4 flex flex-col items-center justify-center relative min-h-[260px] overflow-hidden">
+                        <div id="scan-overlay" class="hidden absolute inset-x-0 h-1 bg-emerald-500 shadow-[0_0_15px_#10b981] scanning-bar z-10"></div>
+                        <div id="specimen-visual" class="text-center">
+                            <div class="w-24 h-24 rounded-3xl bg-white/90 shadow-md flex items-center justify-center mx-auto mb-3 text-5xl" id="specimen-emoji">
+                                🕷️
+                            </div>
+                            <img id="custom-preview-img" src="" alt="Pré-visualização do inseto" class="hidden max-h-48 rounded-xl mx-auto mb-2 object-contain shadow-md">
+                            <span id="specimen-caption" class="text-xs font-semibold text-emerald-900 bg-white/80 px-3 py-1 rounded-full">
+                                Amostra selecionada: Aranha Armadeira
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Coluna Direita: Resultado da Análise (Fiel ao protótipo do Miro) -->
+                    <div class="lg:col-span-7 bg-white border border-emerald-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Resultado da Análise</span>
+                                <span id="risk-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase bg-rose-100 text-rose-700 border border-rose-300">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> PERIGOSO • PEÇONHENTO
+                                </span>
+                            </div>
+
+                            <h4 id="result-name" class="font-display text-2xl font-extrabold text-slate-900">Aranha Armadeira</h4>
+                            <p id="result-scientific" class="text-xs italic text-slate-500 mb-4">Nome científico: Phoneutria nigriventer</p>
+
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-700 leading-relaxed mb-4" id="result-description">
+                                Aranha de comportamento agressivo, encontrada frequentemente em áreas urbanas e periurbanas (sapatos, lenha, bananeiras). Seu veneno é neurotóxico potente e pode causar dor intensa, taquicardia e complicações graves. Mantenha distância e procure atendimento médico imediato em caso de picada.
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                            <button onclick="saveToCatalog()" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-emerald-900 hover:bg-emerald-800 text-white font-bold text-sm px-5 py-3 rounded-xl transition-all shadow-sm">
+                                <i class="fa-solid fa-bookmark"></i> Salvar no Meu Catálogo
+                            </button>
+                            <span id="catalog-feedback" class="text-xs font-bold text-emerald-700 hidden">
+                                <i class="fa-solid fa-check-circle mr-1"></i> Espécime salvo no seu catálogo!
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. ETAPA 5 – TESTES DE USABILIDADE, BENCHMARK E ACESSIBILIDADE / LEIS DE IHC -->
+    <section id="testes" class="py-16 sm:py-20 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-600 block mb-2">Etapa 05 • Avaliação & Fundamentação Teórica</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-emerald-950">Testes de Usabilidade, Acessibilidade e Leis de IHC</h2>
+                <p class="text-slate-600 mt-3 text-base sm:text-lg">
+                    Validação do protótipo com usuários e aplicação dos fundamentos teóricos estudados no quadro do Miro (Lei de Fitts, Lei de Hick e Percepção).
+                </p>
+            </div>
+
+            <!-- Resultados dos Testes de Usabilidade -->
+            <div class="grid md:grid-cols-3 gap-6 mb-14">
+                <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6">
+                    <div class="text-3xl font-display font-extrabold text-emerald-700 mb-1">100%</div>
+                    <h3 class="font-bold text-slate-900 text-base mb-2">Taxa de Sucesso no Fluxo</h3>
+                    <p class="text-sm text-slate-600">
+                        Todos os participantes conseguiram localizar o botão de captura/upload e interpretar o nível de risco sem auxílio externo.
+                    </p>
+                </div>
+
+                <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6">
+                    <div class="text-3xl font-display font-extrabold text-emerald-700 mb-1">&lt; 5 seg</div>
+                    <h3 class="font-bold text-slate-900 text-base mb-2">Tempo de Tomada de Decisão</h3>
+                    <p class="text-sm text-slate-600">
+                        O uso de cores semânticas (Verde = Dócil, Amarelo = Atenção, Vermelho = Perigoso) reduziu drasticamente o tempo de leitura sob estresse.
+                    </p>
+                </div>
+
+                <div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-6">
+                    <div class="text-3xl font-display font-extrabold text-emerald-700 mb-1">Clareza</div>
+                    <h3 class="font-bold text-slate-900 text-base mb-2">Tradução de Termos Técnicos</h3>
+                    <p class="text-sm text-slate-600">
+                        Os usuários elogiaram o equilíbrio entre o rigor científico (nome binomial) e a linguagem direta sobre sintomas e prevenção.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Benchmark Comparativo (iNaturalist / Seek vs. Insectalog) -->
+            <div class="mb-14">
+                <h3 class="font-display text-xl font-bold text-emerald-950 mb-4">Análise Comparativa (Benchmark do Miro)</h3>
+                <div class="overflow-x-auto bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-800 border-b border-slate-200">
+                                <th class="p-4 font-bold">Critério de IHC</th>
+                                <th class="p-4 font-bold">iNaturalist / Seek (Concorrentes)</th>
+                                <th class="p-4 font-bold text-emerald-900 bg-emerald-50">Insectalog (Nossa Solução)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-4 font-semibold text-slate-800">Foco Principal</td>
+                                <td class="p-4 text-slate-600">Rede social naturalista e catalogação acadêmica ampla</td>
+                                <td class="p-4 text-emerald-950 font-medium bg-emerald-50/40">Prevenção de acidentes, segurança doméstica/trilhas e educação</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-semibold text-slate-800">Alerta de Periculosidade</td>
+                                <td class="p-4 text-slate-600">Exige leitura de artigos externos ou Wikipédia em inglês</td>
+                                <td class="p-4 text-emerald-950 font-medium bg-emerald-50/40">Badge imediato de risco (Dócil, Atenção ou Peçonhento) em PT-BR</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-semibold text-slate-800">Curva de Aprendizado</td>
+                                <td class="p-4 text-slate-600">Muitas opções e filtros taxonômicos complexos</td>
+                                <td class="p-4 text-emerald-950 font-medium bg-emerald-50/40">Interface enxuta guiada pela Lei de Hick e Lei de Fitts</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Leis de IHC e Recursos de Acessibilidade -->
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Leis de IHC do Miro -->
+                <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8">
+                    <h3 class="font-display text-xl font-bold text-emerald-950 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-scale-balanced text-emerald-600"></i>
+                        <span>Leis de IHC Aplicadas (Estudo do Miro)</span>
+                    </h3>
+                    <div class="space-y-4 text-sm">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-emerald-900 mb-1">Lei de Fitts</h4>
+                            <p class="text-slate-600">
+                                O tempo para atingir um alvo depende da distância e do tamanho. Por isso, os botões <strong>"Tirar Foto"</strong> e <strong>"Enviar Imagem"</strong> possuem áreas amplas e posicionamento ergonômico para uso com uma mão.
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-emerald-900 mb-1">Lei de Hick</h4>
+                            <p class="text-slate-600">
+                                O tempo de decisão aumenta conforme o número de opções. Reduzimos a navegação principal a apenas <strong>3 itens essenciais</strong> (Início, Identificar, Sobre) para evitar sobrecarga cognitiva em situações de susto.
+                            </p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-emerald-900 mb-1">Percepção Visual e Auditiva</h4>
+                            <p class="text-slate-600">
+                                Uso de ícones universais aliados a rótulos textuais e feedback visual claro (Processador Perceptivo e Cognitivo do Modelo Humano de Informação).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recursos de Acessibilidade -->
+                <div class="bg-emerald-900 text-white rounded-3xl p-6 sm:p-8">
+                    <h3 class="font-display text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-universal-access text-emerald-300"></i>
+                        <span>Recursos de Acessibilidade & Inclusão</span>
+                    </h3>
+                    <p class="text-emerald-100 text-sm mb-5">
+                        Conforme levantado na Ficha de Identificação (item 3 - Contexto e Acessibilidade), o projeto contempla soluções para limitações visuais, motoras e cognitivas:
+                    </p>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3 bg-emerald-800/60 p-3.5 rounded-2xl border border-emerald-700">
+                            <i class="fa-solid fa-eye-low-vision text-emerald-300 mt-1"></i>
+                            <div>
+                                <strong class="block text-white">Contraste Elevado & Semântica Dupla</strong>
+                                <span class="text-emerald-100/90 text-xs">Alertas nunca dependem apenas de cor: combinam cor, ícone de alerta e texto explícito ("PERIGOSO") para usuários daltônicos ou com baixa visão.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 bg-emerald-800/60 p-3.5 rounded-2xl border border-emerald-700">
+                            <i class="fa-solid fa-hand-pointer text-emerald-300 mt-1"></i>
+                            <div>
+                                <strong class="block text-white">Alternativas para Limitações Motoras</strong>
+                                <span class="text-emerald-100/90 text-xs">Além da câmera em tempo real, permite selecionar imagens da galeria ou pedir ajuda a terceiros, com alvos de toque espaçados.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 bg-emerald-800/60 p-3.5 rounded-2xl border border-emerald-700">
+                            <i class="fa-solid fa-volume-high text-emerald-300 mt-1"></i>
+                            <div>
+                                <strong class="block text-white">Compatibilidade com Leitores de Tela</strong>
+                                <span class="text-emerald-100/90 text-xs">Estrutura semântica em HTML5 com atributos ARIA e textos alternativos descritivos para leitura em voz alta.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. CONSIDERAÇÕES FINAIS & CHECKLIST INTERATIVO DE AVALIAÇÃO -->
+    <section id="checklist" class="py-16 sm:py-20 bg-emerald-50/50 border-t border-emerald-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-10 items-start">
+                <!-- Considerações Finais -->
+                <div class="lg:col-span-5 space-y-5">
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-emerald-600 block">Conclusão</span>
+                    <h2 class="font-display text-3xl font-extrabold text-emerald-950">Considerações Finais</h2>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                        O desenvolvimento do <strong>Insectalog</strong> ao longo da disciplina de Design de Interface Humano-Computador demonstrou na prática que uma boa interface vai muito além da estética: ela salva vidas, reduz ansiedades e democratiza o acesso à ciência.
+                    </p>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                        Ao aplicar as etapas do Design Thinking e as Leis de IHC (Fitts e Hick), foi possível transformar uma dúvida comum — <em>"esse inseto é perigoso?"</em> — em uma solução digital intuitiva, inclusiva e alinhada à missão social do <strong>Instituto Federal do Paraná (IFPR - Campus Palmas)</strong>.
+                    </p>
+
+                    <div class="bg-white border border-emerald-200 rounded-2xl p-5 shadow-sm">
+                        <div class="text-xs font-bold text-emerald-800 uppercase mb-1">Links Rápidos do Projeto</div>
+                        <div class="flex flex-col gap-2 mt-2 text-sm">
+                            <a href="https://miro.com/app/board/uXjVG6Fdpe0=/" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:text-emerald-900 font-semibold flex items-center gap-2">
+                                <i class="fa-solid fa-up-right-from-square"></i> Quadro Completo no MIRO (uXjVG6Fdpe0=)
+                            </a>
+                            <a href="#simulador" class="text-emerald-700 hover:text-emerald-900 font-semibold flex items-center gap-2">
+                                <i class="fa-solid fa-play"></i> Simulador Interativo do Protótipo Insectalog
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checklist Oficial da Profª Andreia Marini -->
+                <div class="lg:col-span-7 bg-white border border-emerald-200 rounded-3xl p-6 sm:p-8 shadow-md">
+                    <div class="flex items-center justify-between gap-2 mb-5 pb-4 border-b border-slate-100">
+                        <div>
+                            <h3 class="font-display text-xl font-bold text-emerald-950">Checklist de Avaliação do Trabalho</h3>
+                            <p class="text-xs text-slate-500">Conferência de todos os itens exigidos pela Profª Andreia Marini (3º Trimestre • 2026)</p>
+                        </div>
+                        <span class="text-xs font-extrabold bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-full">16 / 16 Presentes</span>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-2.5 text-xs sm:text-sm">
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Link do MIRO</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Identificação do Processo (Design Thinking)</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Título do Trabalho (Insectalog)</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 1 – Empatia: Escolha do problema</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 1 – Empatia: Pesquisa de necessidades</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 2 – Definição: Objetivo e Matriz CSD</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 2 – Definição: Problema a ser resolvido</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 2 – Definição: Personas / Jornada</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 3 – Ideação: Crazy 8 e Plano de Ação</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 3 – Ideação: Fluxo e Telas do App</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 4 – Prototipação: Média/Alta fidelidade</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Link do Protótipo – Projeto Interativo</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Etapa 5 – Teste: Teste de usabilidade</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Análise sobre os resultados dos testes</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Aplicação de recursos de Acessibilidade</span>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 text-slate-800">
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <span>Considerações Finais</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé Institucional -->
+    <footer class="bg-emerald-950 text-emerald-200 py-10 border-t border-emerald-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-800 text-white flex items-center justify-center">
+                    <i class="fa-solid fa-bug"></i>
+                </div>
+                <div>
+                    <span class="font-display font-bold text-white block">Insectalog • Projeto de IHC</span>
+                    <span class="text-emerald-300/80 text-xs">Instituto Federal do Paraná (IFPR) — Campus Palmas</span>
+                </div>
+            </div>
+            <div class="text-center sm:text-right text-xs text-emerald-300/80">
+                <p>Desenvolvido por <strong class="text-white">Erik Liam G. Cerutti</strong> • 2º Ano Informática para Internet (2026)</p>
+                <p>Orientação: Profª Andreia Marini</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript para Interatividade, Barra de Progresso, Acessibilidade e Simulador -->
+    <script>
+        // 1. Barra de Progresso de Leitura
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        });
+
+        // 2. Menu Mobile Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // 3. Acessibilidade: Alternar Tamanho da Fonte
+        function toggleFontSize() {
+            document.documentElement.classList.toggle('large-text-mode');
+        }
+
+        // 4. Filtro Interativo da Matriz CSD
+        function filterCSD(category) {
+            const cols = ['certezas', 'suposicoes', 'duvidas'];
+            cols.forEach(c => {
+                const el = document.getElementById('csd-' + c);
+                if (category === 'all' || category === c) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+
+            document.querySelectorAll('.csd-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-900', 'text-white');
+                btn.classList.add('text-slate-600');
+            });
+            event.target.classList.add('bg-emerald-900', 'text-white');
+            event.target.classList.remove('text-slate-600');
+        }
+
+        // 5. Banco de Dados do Simulador Interativo Insectalog
+        const specimens = {
+            armadeira: {
+                emoji: '🕷️',
+                name: 'Aranha Armadeira',
+                scientific: 'Phoneutria nigriventer',
+                riskLabel: 'PERIGOSO • PEÇONHENTO',
+                riskStyle: 'bg-rose-100 text-rose-700 border-rose-300',
+                icon: 'fa-triangle-exclamation',
+                desc: 'Aranha de comportamento agressivo, encontrada frequentemente em áreas urbanas e periurbanas (sapatos, lenha, bananeiras). Seu veneno é neurotóxico potente e pode causar dor intensa, taquicardia e complicações graves. Mantenha distância e procure atendimento médico imediato em caso de picada.'
+            },
+            escorpiao: {
+                emoji: '🦂',
+                name: 'Escorpião Amarelo',
+                scientific: 'Tityus serrulatus',
+                riskLabel: 'PERIGOSO • PEÇONHENTO',
+                riskStyle: 'bg-rose-100 text-rose-700 border-rose-300',
+                icon: 'fa-skull-crossbones',
+                desc: 'Principal causador de acidentes graves com escorpiões no Brasil. Adapta-se facilmente a ambientes domésticos e entulhos. Em caso de acidente, lave o local com água e sabão e dirija-se imediatamente ao pronto-socorro mais próximo.'
+            },
+            abelha: {
+                emoji: '🐝',
+                name: 'Abelha Europeia',
+                scientific: 'Apis mellifera',
+                riskLabel: 'ATENÇÃO • POLINIZADOR',
+                riskStyle: 'bg-amber-100 text-amber-800 border-amber-300',
+                icon: 'fa-circle-exclamation',
+                desc: 'Inseto fundamental para a polinização e equilíbrio ecológico. Não ataca sem provocação, mas possui ferrão que pode causar reações alérgicas graves em pessoas sensíveis. Evite movimentos bruscos perto de colmeias.'
+            },
+            joaninha: {
+                emoji: '🐞',
+                name: 'Joaninha',
+                scientific: 'Coccinella septempunctata',
+                riskLabel: 'DÓCIL • INOFENSIVO',
+                riskStyle: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                icon: 'fa-shield-heart',
+                desc: 'Totalmente inofensiva para seres humanos e animais domésticos. É uma excelente aliada no controle biológico natural de pragas em jardins e lavouras, alimentando-se de pulgões.'
+            }
+        };
+
+        let catalogCount = 4;
+
+        function analyzeSpecimen(key) {
+            const data = specimens[key];
+            if (!data) return;
+
+            // Efeito visual de escaneamento
+            const scanOverlay = document.getElementById('scan-overlay');
+            scanOverlay.classList.remove('hidden');
+
+            // Resetar imagem customizada
+            document.getElementById('custom-preview-img').classList.add('hidden');
+            const emojiEl = document.getElementById('specimen-emoji');
+            emojiEl.classList.remove('hidden');
+            emojiEl.textContent = data.emoji;
+            document.getElementById('specimen-caption').textContent = 'Amostra selecionada: ' + data.name;
+
+            setTimeout(() => {
+                scanOverlay.classList.add('hidden');
+                document.getElementById('result-name').textContent = data.name;
+                document.getElementById('result-scientific').textContent = 'Nome científico: ' + data.scientific;
+                document.getElementById('result-description').textContent = data.desc;
+
+                const badge = document.getElementById('risk-badge');
+                badge.className = `inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase border ${data.riskStyle}`;
+                badge.innerHTML = `<i class="fa-solid ${data.icon}"></i> ${data.riskLabel}`;
+                document.getElementById('catalog-feedback').classList.add('hidden');
+            }, 450);
+        }
+
+        function handleCustomUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const scanOverlay = document.getElementById('scan-overlay');
+                scanOverlay.classList.remove('hidden');
+
+                document.getElementById('specimen-emoji').classList.add('hidden');
+                const imgEl = document.getElementById('custom-preview-img');
+                imgEl.src = e.target.result;
+                imgEl.classList.remove('hidden');
+                document.getElementById('specimen-caption').textContent = 'Arquivo carregado: ' + file.name;
+
+                setTimeout(() => {
+                    scanOverlay.classList.add('hidden');
+                    document.getElementById('result-name').textContent = 'Espécime Analisado (Amostra Local)';
+                    document.getElementById('result-scientific').textContent = 'Análise visual concluída com sucesso';
+                    document.getElementById('result-description').textContent = 'Imagem processada pelo protótipo Insectalog. Na versão conectada à base acadêmica, o algoritmo compara padrões morfológicos para exibir o grau exato de peçonha e recomendações preventivas.';
+                    
+                    const badge = document.getElementById('risk-badge');
+                    badge.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase border bg-amber-100 text-amber-800 border-amber-300';
+                    badge.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> ANÁLISE CONCLUÍDA';
+                    document.getElementById('catalog-feedback').classList.add('hidden');
+                }, 700);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveToCatalog() {
+            catalogCount++;
+            const rankPos = Math.max(1, 12 - Math.floor((catalogCount - 4) / 2));
+            document.getElementById('sim-rank-count').textContent = `${rankPos}º Lugar (${catalogCount} catalogados)`;
+            const feedback = document.getElementById('catalog-feedback');
+            feedback.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
